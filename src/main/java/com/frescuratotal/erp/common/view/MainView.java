@@ -14,6 +14,7 @@ public class MainView {
         System.out.println();
         System.out.println("=== FRESCURA TOTAL ERP ===");
         System.out.println("1. Proveedores");
+        System.out.println("2. Productos");
         System.out.println("0. Salir");
         return leerNumero("Seleccione una opcion: ");
     }

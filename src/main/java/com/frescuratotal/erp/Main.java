@@ -1,6 +1,9 @@
 package com.frescuratotal.erp;
 
 import com.frescuratotal.erp.common.view.MainView;
+import com.frescuratotal.erp.inventory.controller.ProductController;
+import com.frescuratotal.erp.inventory.model.ProductDao;
+import com.frescuratotal.erp.inventory.view.ProductView;
 import com.frescuratotal.erp.suppliers.controller.SupplierController;
 import com.frescuratotal.erp.suppliers.model.SupplierDao;
 import com.frescuratotal.erp.suppliers.view.SupplierView;
@@ -13,6 +16,8 @@ public class Main {
         MainView mainView = new MainView(scanner);
         SupplierController supplierController =
                 new SupplierController(new SupplierDao(), new SupplierView(scanner));
+        ProductController productController =
+                new ProductController(new ProductDao(), new ProductView(scanner));
 
         int opcion;
         do {
@@ -20,6 +25,9 @@ public class Main {
             switch (opcion) {
                 case 1:
                     supplierController.iniciar();
+                    break;
+                case 2:
+                    productController.iniciar();
                     break;
                 case 0:
                     mainView.mostrarMensaje("Hasta pronto.");
