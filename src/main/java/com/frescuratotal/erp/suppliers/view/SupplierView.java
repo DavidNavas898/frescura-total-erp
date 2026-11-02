@@ -18,7 +18,6 @@ public class SupplierView {
         System.out.println("1. Listar proveedores");
         System.out.println("2. Agregar proveedor");
         System.out.println("3. Actualizar proveedor");
-        System.out.println("4. Desactivar proveedor");
         System.out.println("0. Volver al menu principal");
         return leerNumero("Seleccione una opcion: ");
     }
@@ -109,12 +108,6 @@ public class SupplierView {
 
     public int pedirId() {
         return leerNumero("Ingrese el ID del proveedor: ");
-    }
-
-    public boolean confirmar(String pregunta) {
-        System.out.print(pregunta + " (s/n): ");
-        String respuesta = scanner.nextLine();
-        return respuesta.equalsIgnoreCase("s");
     }
 
     public void mostrarMensaje(String mensaje) {

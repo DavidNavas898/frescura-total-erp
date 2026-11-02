@@ -12,7 +12,7 @@ import com.frescuratotal.erp.common.DatabaseConnection;
 public class SupplierDao {
     public List<Supplier> obtenerProveedores() throws SQLException {
         List<Supplier> proveedores = new ArrayList<>();
-        String sql = "SELECT * FROM proveedores WHERE activo = TRUE ORDER BY nombre";
+        String sql = "SELECT * FROM proveedores ORDER BY nombre";
         try (Connection conn = DatabaseConnection.getConnection();
                 PreparedStatement stmt = conn.prepareStatement(sql);
                 ResultSet rs = stmt.executeQuery()) {
@@ -85,13 +85,4 @@ public class SupplierDao {
             stmt.executeUpdate();
         }
     }
-    public boolean desactivarProveedor(int id) throws SQLException {
-        String sql = "UPDATE proveedores SET activo = FALSE WHERE id_proveedor = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
-        }
-    }
-    
 }

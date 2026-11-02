@@ -30,9 +30,6 @@ public class SupplierController {
                 case 3:
                     actualizarProveedor();
                     break;
-                case 4:
-                    desactivarProveedor();
-                    break;
                 case 0:
                     supplierView.mostrarMensaje("Regresando al menu principal...");
                     break;
@@ -74,30 +71,6 @@ public class SupplierController {
             supplierView.mostrarMensaje("Proveedor actualizado exitosamente.");
         } catch (SQLException e) {
             supplierView.mostrarMensaje("Error al actualizar proveedor: " + e.getMessage());
-        }
-    }
-
-    private void desactivarProveedor() {
-        int id = supplierView.pedirId();
-        try {
-            Supplier proveedor = supplierDao.obtenerProveedorPorId(id);
-            if (proveedor == null) {
-                supplierView.mostrarMensaje("Proveedor no encontrado.");
-                return;
-            }
-            if (!proveedor.isActivo()) {
-                supplierView.mostrarMensaje("El proveedor ya esta inactivo.");
-                return;
-            }
-            boolean confirmado = supplierView.confirmar("Desea desactivar a " + proveedor.getNombre() + "?");
-            if (confirmado) {
-                supplierDao.desactivarProveedor(id);
-                supplierView.mostrarMensaje("Proveedor desactivado exitosamente.");
-            } else {
-                supplierView.mostrarMensaje("Operacion cancelada.");
-            }
-        } catch (SQLException e) {
-            supplierView.mostrarMensaje("Error al desactivar proveedor: " + e.getMessage());
         }
     }
 }
