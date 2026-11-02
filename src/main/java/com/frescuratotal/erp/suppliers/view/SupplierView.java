@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.suppliers.view;
 
+import com.frescuratotal.erp.inventory.model.Product;
 import com.frescuratotal.erp.suppliers.model.Supplier;
 import java.util.List;
 import java.util.Scanner;
@@ -18,6 +19,8 @@ public class SupplierView {
         System.out.println("1. Listar proveedores");
         System.out.println("2. Agregar proveedor");
         System.out.println("3. Actualizar proveedor");
+        System.out.println("4. Ver catalogo de un proveedor");
+        System.out.println("5. Agregar producto al catalogo");
         System.out.println("0. Volver al menu principal");
         return leerNumero("Seleccione una opcion: ");
     }
@@ -106,8 +109,36 @@ public class SupplierView {
         }
     }
 
+    public void mostrarCatalogo(String nombreProveedor, List<Product> productos) {
+        System.out.println();
+        System.out.println("--- CATALOGO DE " + nombreProveedor + " ---");
+        if (productos.isEmpty()) {
+            System.out.println("Este proveedor no tiene productos en su catalogo.");
+            return;
+        }
+        for (Product producto : productos) {
+            System.out.println("ID: " + producto.getIdProducto()
+                    + " | Nombre: " + producto.getNombre()
+                    + " | Categoria: " + producto.getNombreCategoria()
+                    + " | Unidad: " + producto.getUnidadMedida());
+        }
+    }
+
+    public void mostrarProductosDisponibles(List<Product> productos) {
+        System.out.println();
+        System.out.println("--- PRODUCTOS DISPONIBLES ---");
+        for (Product producto : productos) {
+            System.out.println(producto.getIdProducto() + " - " + producto.getNombre()
+                    + " (" + producto.getNombreCategoria() + ")");
+        }
+    }
+
     public int pedirId() {
         return leerNumero("Ingrese el ID del proveedor: ");
+    }
+
+    public int pedirIdProducto() {
+        return leerNumero("Ingrese el ID del producto: ");
     }
 
     public void mostrarMensaje(String mensaje) {

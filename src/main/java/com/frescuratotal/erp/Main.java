@@ -15,7 +15,7 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         MainView mainView = new MainView(scanner);
         SupplierController supplierController =
-                new SupplierController(new SupplierDao(), new SupplierView(scanner));
+                new SupplierController(new SupplierDao(), new ProductDao(), new SupplierView(scanner));
         ProductController productController =
                 new ProductController(new ProductDao(), new ProductView(scanner));
 
