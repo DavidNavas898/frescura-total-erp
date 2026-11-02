@@ -32,6 +32,30 @@ public class SupplierDao {
         }
         return proveedores;
     }
+
+    public Supplier obtenerProveedorPorId(int id) throws SQLException {
+        String sql = "SELECT * FROM proveedores WHERE id_proveedor = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Supplier supplier = new Supplier();
+                supplier.setIdProveedor(rs.getInt("id_proveedor"));
+                supplier.setNombre(rs.getString("nombre"));
+                supplier.setNit(rs.getString("nit"));
+                supplier.setPersonaContacto(rs.getString("persona_contacto"));
+                supplier.setEmail(rs.getString("email"));
+                supplier.setTelefono(rs.getString("telefono"));
+                supplier.setDireccion(rs.getString("direccion"));
+                supplier.setActivo(rs.getBoolean("activo"));
+                supplier.setFechaRegistro(rs.getTimestamp("fecha_registro").toLocalDateTime());
+                return supplier;
+            }
+        }
+        return null;
+    }
+
     public void agregarProveedor(Supplier supplier) throws SQLException {
         String sql = "INSERT INTO proveedores (nombre, nit, persona_contacto, email, telefono, direccion, activo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
