@@ -18,4 +18,15 @@ public class QuarantineDao {
             stmt.executeUpdate();
         }
     }
+
+    public void resolverCuarentena(int idLote, String notas) throws SQLException{
+        String sql = "UPDATE registro_cuarentena SET resuelta = TRUE, fecha_resolucion = NOW(), notas_resolucion = ? WHERE id_lote = ? AND resuelta = FALSE";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, notas);
+            stmt.setInt(2, idLote);
+            stmt.executeUpdate();
+        }
+    }
+
 }

@@ -136,4 +136,14 @@ public class LotDao {
             stmt.executeUpdate();
         }
     }
+
+    public void actualizarCantidad(int idLote, double cantidad) throws SQLException {
+        String sql = "UPDATE lotes_inventario SET cantidad = ? WHERE id_lote = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDouble(1, cantidad);
+            stmt.setInt(2, idLote);
+            stmt.executeUpdate();
+        }
+    }
 }

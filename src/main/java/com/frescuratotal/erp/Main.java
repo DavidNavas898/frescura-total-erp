@@ -10,6 +10,8 @@ import com.frescuratotal.erp.suppliers.view.SupplierView;
 import com.frescuratotal.erp.inventory.controller.LotController;
 import com.frescuratotal.erp.inventory.model.LotDao;
 import com.frescuratotal.erp.inventory.model.QuarantineDao;
+import com.frescuratotal.erp.inventory.model.InspectionDao;
+import com.frescuratotal.erp.inventory.model.WasteDao;
 import com.frescuratotal.erp.inventory.view.LotView;
 import java.util.Scanner;
 
@@ -24,7 +26,7 @@ public class Main {
                 new ProductController(new ProductDao(), new ProductView(scanner));
         LotController lotController =
                 new LotController(new LotDao(), new LotView(scanner), new ProductDao(), new SupplierDao(),
-                        new QuarantineDao());
+                        new QuarantineDao(), new InspectionDao(), new WasteDao());
         int opcion;
         do {
             opcion = mainView.mostrarMenu();

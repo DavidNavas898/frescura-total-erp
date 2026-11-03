@@ -2,6 +2,7 @@ package com.frescuratotal.erp.inventory.view;
 
 
 
+import com.frescuratotal.erp.inventory.model.Inspection;
 import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.Product;
 import com.frescuratotal.erp.inventory.model.Quarantine;
@@ -26,6 +27,7 @@ public class LotView {
         System.out.println("3. Buscar lote por numero");
         System.out.println("4. Revisar vencimientos");
         System.out.println("5. Poner lote en cuarentena");
+        System.out.println("6. Inspeccionar lote en cuarentena");
         System.out.println("0. Volver al menu principal");
         return leerNumero("Seleccione una opcion: ");
     }
@@ -123,6 +125,29 @@ public class LotView {
         cuarentena.setUsuario(scanner.nextLine());
 
         return cuarentena;
+    }
+
+    
+    public Inspection pedirDatosInspeccion() {
+        Inspection inspeccion = new Inspection();
+
+        System.out.print("Nombre del inspector: ");
+        inspeccion.setNombreInspector(scanner.nextLine());
+
+        int eleccion = leerNumero("Resultado (1.Aprobado/2.Rechazado) ");
+
+        if (eleccion == 1) {
+            inspeccion.setResultado("Aprobado");
+        } else{
+            inspeccion.setResultado("Rechazado");
+            System.out.print("Motivo del rechazo: ");
+            inspeccion.setMotivoRechazo(scanner.nextLine());
+        }
+
+        System.out.print("Notas: ");
+        inspeccion.setNotas(scanner.nextLine());
+
+        return inspeccion;
     }
 
 
