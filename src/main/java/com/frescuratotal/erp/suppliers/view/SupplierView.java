@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.suppliers.view;
 
+import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.Product;
 import com.frescuratotal.erp.suppliers.model.Supplier;
 import java.util.List;
@@ -21,6 +22,7 @@ public class SupplierView {
         System.out.println("3. Actualizar proveedor");
         System.out.println("4. Ver catalogo de un proveedor");
         System.out.println("5. Agregar producto al catalogo");
+        System.out.println("6. Ver historial de compras");
         System.out.println("0. Volver al menu principal");
         return leerNumero("Seleccione una opcion: ");
     }
@@ -121,6 +123,22 @@ public class SupplierView {
                     + " | Nombre: " + producto.getNombre()
                     + " | Categoria: " + producto.getNombreCategoria()
                     + " | Unidad: " + producto.getUnidadMedida());
+        }
+    }
+
+    public void mostrarHistorial(String nombreProveedor, List<Lot> lotes) {
+        System.out.println();
+        System.out.println("--- HISTORIAL DE COMPRAS DE " + nombreProveedor + " ---");
+        if (lotes.isEmpty()) {
+            System.out.println("Este proveedor no tiene entregas registradas");
+            return;
+        }
+        for (Lot lote : lotes) {
+            System.out.println("Lote: " + lote.getNumeroLote()
+                    + " | Producto: " + lote.getNombreProducto()
+                    + " | Ingreso: " + lote.getFechaIngreso()
+                    + " | Cantidad recibida: " + lote.getCantidadInicial()
+                    + " | Estado: " + lote.getNombreEstado());
         }
     }
 

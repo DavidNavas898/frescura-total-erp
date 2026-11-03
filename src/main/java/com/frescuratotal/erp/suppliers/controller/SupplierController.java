@@ -1,5 +1,7 @@
 package com.frescuratotal.erp.suppliers.controller;
 
+import com.frescuratotal.erp.inventory.model.Lot;
+import com.frescuratotal.erp.inventory.model.LotDao;
 import com.frescuratotal.erp.inventory.model.Product;
 import com.frescuratotal.erp.inventory.model.ProductDao;
 import com.frescuratotal.erp.suppliers.model.Supplier;
@@ -13,11 +15,14 @@ public class SupplierController {
     private SupplierDao supplierDao;
     private ProductDao productDao;
     private SupplierView supplierView;
+    private LotDao lotDao;
 
-    public SupplierController(SupplierDao supplierDao, ProductDao productDao, SupplierView supplierView) {
+    public SupplierController(SupplierDao supplierDao, ProductDao productDao, SupplierView supplierView,
+            LotDao lotDao) {
         this.supplierDao = supplierDao;
         this.productDao = productDao;
         this.supplierView = supplierView;
+        this.lotDao = lotDao;
     }
 
     public void iniciar() {
@@ -39,6 +44,9 @@ public class SupplierController {
                     break;
                 case 5:
                     agregarProductoAlCatalogo();
+                    break;
+                case 6:
+                    verHistorial();
                     break;
                 case 0:
                     supplierView.mostrarMensaje("Regresando al menu principal...");
@@ -96,6 +104,21 @@ public class SupplierController {
             supplierView.mostrarCatalogo(proveedor.getNombre(), catalogo);
         } catch (SQLException e) {
             supplierView.mostrarMensaje("Error al consultar el catalogo: " + e.getMessage());
+        }
+    }
+
+    private void verHistorial() {
+        int id = supplierView.pedirId();
+        try {
+            Supplier proveedor = supplierDao.obtenerProveedorPorId(id);
+            if (proveedor == null) {
+                supplierView.mostrarMensaje("Proveedor no encontrado.");
+                return;
+            }
+            List<Lot> lotes = lotDao.obtenerLotesPorProveedor(id);
+            supplierView.mostrarHistorial(proveedor.getNombre(), lotes);
+        } catch (SQLException e) {
+            supplierView.mostrarMensaje("Error al consultar el historial: " + e.getMessage());
         }
     }
 
