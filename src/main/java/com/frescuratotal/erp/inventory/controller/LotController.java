@@ -4,6 +4,8 @@ import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.LotDao;
 import com.frescuratotal.erp.inventory.model.Product;
 import com.frescuratotal.erp.inventory.model.ProductDao;
+import com.frescuratotal.erp.inventory.model.Quarantine;
+import com.frescuratotal.erp.inventory.model.QuarantineDao;
 import com.frescuratotal.erp.inventory.view.LotView;
 import com.frescuratotal.erp.suppliers.model.Supplier;
 import com.frescuratotal.erp.suppliers.model.SupplierDao;
@@ -19,13 +21,16 @@ public class LotController {
     private LotView lotView;
     private ProductDao productDao;
     private SupplierDao supplierDao;
+    private QuarantineDao quarantineDao;
 
 
-    public LotController(LotDao lotDao, LotView lotView, ProductDao productDao, SupplierDao supplierDao) {
+    public LotController(LotDao lotDao, LotView lotView, ProductDao productDao, SupplierDao supplierDao,
+            QuarantineDao quarantineDao) {
         this.lotDao = lotDao;
         this.lotView = lotView;
         this.productDao = productDao;
         this.supplierDao = supplierDao;
+        this.quarantineDao = quarantineDao;
     }
 
     public void iniciar(){
@@ -41,6 +46,12 @@ public class LotController {
                     break;
                 case 3:
                     buscarLote();
+                    break;
+                case 4:
+                    revisarVencimientos();
+                    break;
+                case 5:
+                    ponerEnCuarentena();
                     break;
                 case 0:
                     lotView.mostrarMensaje("Regresando al menu principal...");
@@ -72,6 +83,39 @@ public class LotController {
             }
         } catch (SQLException e) {
             lotView.mostrarMensaje("Error al buscar el lote: " + e.getMessage());
+        }
+    }
+
+    private void revisarVencimientos() {
+        try {
+            int actualizados = lotDao.actualizarEstadosPorVencimiento();
+            lotView.mostrarMensaje("Revision completada. Se actualizaron " + actualizados + " lotes.");
+        } catch (SQLException e) {
+            lotView.mostrarMensaje("Error al revisar vencimientos: " + e.getMessage());
+        }
+    }
+
+    private void ponerEnCuarentena() {
+        try {
+            String numeroLote = lotView.pedirNumeroLote();
+            Lot lote = lotDao.obtenerLotePorNumero(numeroLote);
+            if (lote == null) {
+                lotView.mostrarMensaje("No se encontro ningun lote con el numero " + numeroLote);
+                return;
+            }
+            if (lote.getIdEstado() == 3 || lote.getIdEstado() == 4) {
+                lotView.mostrarMensaje("No se puede poner en cuarentena un lote en estado " + lote.getNombreEstado() + ".");
+                return;
+            }
+
+            Quarantine cuarentena = lotView.pedirDatosCuarentena();
+            cuarentena.setIdLote(lote.getIdLote());
+
+            quarantineDao.registrarCuarentena(cuarentena);
+            lotDao.cambiarEstado(lote.getIdLote(), 4);
+            lotView.mostrarMensaje("El lote " + numeroLote + " quedo En Cuarentena y bloqueado para la venta.");
+        } catch (SQLException e) {
+            lotView.mostrarMensaje("Error al poner el lote en cuarentena: " + e.getMessage());
         }
     }
 

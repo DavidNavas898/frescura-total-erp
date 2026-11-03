@@ -109,5 +109,31 @@ public class LotDao {
     }
 
 
-    
+    public int actualizarEstadosPorVencimiento()throws SQLException{
+        String sqlVencidos = "UPDATE lotes_inventario SET id_estado = 3 "
+                + "WHERE fecha_vencimiento < CURDATE() "
+                + "AND id_estado IN (1, 2)";
+        String sqlProximos = "UPDATE lotes_inventario SET id_estado = 2 "
+                + "WHERE fecha_vencimiento <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) "
+                + "AND id_estado = 1";
+
+        int actualizados = 0;
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmtVencidos = conn.prepareStatement(sqlVencidos);
+                PreparedStatement stmtProximos = conn.prepareStatement(sqlProximos)){
+            actualizados = actualizados + stmtVencidos.executeUpdate();
+            actualizados = actualizados + stmtProximos.executeUpdate();
+        }
+        return actualizados;
+    }
+
+    public void cambiarEstado(int idLote, int idEstado) throws SQLException {
+        String sql = "UPDATE lotes_inventario SET id_estado = ? WHERE id_lote = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idEstado);
+            stmt.setInt(2, idLote);
+            stmt.executeUpdate();
+        }
+    }
 }

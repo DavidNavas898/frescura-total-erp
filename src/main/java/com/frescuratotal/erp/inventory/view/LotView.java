@@ -4,6 +4,7 @@ package com.frescuratotal.erp.inventory.view;
 
 import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.Product;
+import com.frescuratotal.erp.inventory.model.Quarantine;
 import com.frescuratotal.erp.suppliers.model.Supplier;
 import java.sql.Date;
 import java.util.List;
@@ -23,6 +24,8 @@ public class LotView {
         System.out.println("1. Listar lotes");
         System.out.println("2. Agregar lotes");
         System.out.println("3. Buscar lote por numero");
+        System.out.println("4. Revisar vencimientos");
+        System.out.println("5. Poner lote en cuarentena");
         System.out.println("0. Volver al menu principal");
         return leerNumero("Seleccione una opcion: ");
     }
@@ -108,6 +111,18 @@ public class LotView {
         System.out.println("Precio de venta: " + lote.getPrecioVenta());
         System.out.println("Ubicacion: " + lote.getPasillo() + "-" + lote.getEstante());
         System.out.println("Estado: " + lote.getNombreEstado());
+    }
+
+    public Quarantine pedirDatosCuarentena() {
+        Quarantine cuarentena = new Quarantine();
+
+        System.out.print("Motivo de la cuarentena (ej: empaque danado, olor extrano): ");
+        cuarentena.setMotivo(scanner.nextLine());
+
+        System.out.print("Nombre del operario: ");
+        cuarentena.setUsuario(scanner.nextLine());
+
+        return cuarentena;
     }
 
 
