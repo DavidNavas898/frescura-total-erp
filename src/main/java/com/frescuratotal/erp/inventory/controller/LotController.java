@@ -1,6 +1,5 @@
 package com.frescuratotal.erp.inventory.controller;
 
-import com.frescuratotal.erp.inventory.model.Category;
 import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.LotDao;
 import com.frescuratotal.erp.inventory.model.Product;
@@ -40,6 +39,9 @@ public class LotController {
                 case 2:
                     registrarLote();
                     break;
+                case 3:
+                    buscarLote();
+                    break;
                 case 0:
                     lotView.mostrarMensaje("Regresando al menu principal...");
                     break;
@@ -56,6 +58,20 @@ public class LotController {
             lotView.mostrarLotes(lotes);
         } catch (SQLException e) {
             lotView.mostrarMensaje("Error al listar los lotes: " + e.getMessage());
+        }
+    }
+
+    private void buscarLote() {
+        try {
+            String numeroLote = lotView.pedirNumeroLote();
+            Lot lote = lotDao.obtenerLotePorNumero(numeroLote);
+            if (lote == null) {
+                lotView.mostrarMensaje("No se encontro ningun lote con el numero " + numeroLote);
+            } else {
+                lotView.mostrarDetalleLote(lote);
+            }
+        } catch (SQLException e) {
+            lotView.mostrarMensaje("Error al buscar el lote: " + e.getMessage());
         }
     }
 

@@ -22,6 +22,7 @@ public class LotView {
         System.out.println("--- MENU DE LOTES ---");
         System.out.println("1. Listar lotes");
         System.out.println("2. Agregar lotes");
+        System.out.println("3. Buscar lote por numero");
         System.out.println("0. Volver al menu principal");
         return leerNumero("Seleccione una opcion: ");
     }
@@ -85,6 +86,28 @@ public class LotView {
         lote.setEstante(scanner.nextLine());
 
         return lote;
+    }
+
+    public String pedirNumeroLote(){
+        System.out.println();
+        System.out.print("Numero de lote: ");
+        return scanner.nextLine();
+    }
+
+    public void mostrarDetalleLote(Lot lote) {
+        System.out.println();
+        System.out.println("--- DETALLE DEL LOTE ---");
+        System.out.println("Numero de lote: " + lote.getNumeroLote());
+        System.out.println("Producto: " + lote.getNombreProducto());
+        System.out.println("Proveedor: " + lote.getNombreProveedor());
+        System.out.println("Fecha de ingreso: " + lote.getFechaIngreso());
+        System.out.println("Fecha de vencimiento: " + lote.getFechaVencimiento());
+        System.out.println("Cantidad recibida: " + lote.getCantidadInicial());
+        System.out.println("Cantidad actual: " + lote.getCantidad());
+        System.out.println("Precio de compra: " + lote.getPrecioCompra());
+        System.out.println("Precio de venta: " + lote.getPrecioVenta());
+        System.out.println("Ubicacion: " + lote.getPasillo() + "-" + lote.getEstante());
+        System.out.println("Estado: " + lote.getNombreEstado());
     }
 
 
