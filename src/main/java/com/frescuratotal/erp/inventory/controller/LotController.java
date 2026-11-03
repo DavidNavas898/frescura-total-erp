@@ -64,6 +64,9 @@ public class LotController {
                 case 6:
                     inspeccionarLote();
                     break;
+                case 7:
+                    registrarMerma();
+                    break;
                 case 0:
                     lotView.mostrarMensaje("Regresando al menu principal...");
                     break;
@@ -168,6 +171,40 @@ public class LotController {
             quarantineDao.resolverCuarentena(lote.getIdLote(), inspeccion.getNotas());
         } catch (SQLException e) {
             lotView.mostrarMensaje("Error al inspeccionar el lote: " + e.getMessage());
+        }
+    }
+
+    private void registrarMerma() {
+        try {
+            String numeroLote = lotView.pedirNumeroLote();
+            Lot lote = lotDao.obtenerLotePorNumero(numeroLote);
+            if (lote == null) {
+                lotView.mostrarMensaje("No se encontro ningun lote con el numero " + numeroLote);
+                return;
+            }
+            if (lote.getCantidad() == 0) {
+                lotView.mostrarMensaje("El lote " + numeroLote + " ya no tiene cantidad disponible.");
+                return;
+            }
+
+            lotView.mostrarMensaje("Cantidad disponible: " + lote.getCantidad());
+
+            Waste merma = lotView.pedirDatosMerma();
+            merma.setIdLote(lote.getIdLote());
+
+            if (merma.getCantidadPerdida() <= 0 || merma.getCantidadPerdida() > lote.getCantidad()) {
+                lotView.mostrarMensaje("Cantidad invalida. Debe ser mayor a 0 y no mayor a " + lote.getCantidad() + ".");
+                return;
+            }
+
+            wasteDao.registrarMerma(merma);
+
+            double nuevaCantidad = lote.getCantidad() - merma.getCantidadPerdida();
+            lotDao.actualizarCantidad(lote.getIdLote(), nuevaCantidad);
+
+            lotView.mostrarMensaje("Merma registrada. Al lote " + numeroLote + " le quedan " + nuevaCantidad + ".");
+        } catch (SQLException e) {
+            lotView.mostrarMensaje("Error al registrar la merma: " + e.getMessage());
         }
     }
 

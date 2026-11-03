@@ -6,6 +6,7 @@ import com.frescuratotal.erp.inventory.model.Inspection;
 import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.Product;
 import com.frescuratotal.erp.inventory.model.Quarantine;
+import com.frescuratotal.erp.inventory.model.Waste;
 import com.frescuratotal.erp.suppliers.model.Supplier;
 import java.sql.Date;
 import java.util.List;
@@ -28,6 +29,7 @@ public class LotView {
         System.out.println("4. Revisar vencimientos");
         System.out.println("5. Poner lote en cuarentena");
         System.out.println("6. Inspeccionar lote en cuarentena");
+        System.out.println("7. Registrar merma");
         System.out.println("0. Volver al menu principal");
         return leerNumero("Seleccione una opcion: ");
     }
@@ -148,6 +150,21 @@ public class LotView {
         inspeccion.setNotas(scanner.nextLine());
 
         return inspeccion;
+    }
+
+     public Waste pedirDatosMerma() {
+        Waste merma = new Waste();
+
+        double perdida = leerDecimal("Cantidad perdida: ");
+        merma.setCantidadPerdida(perdida);
+
+        System.out.print("Motivo (ej: vencido, dañado): ");
+        merma.setMotivo(scanner.nextLine());
+
+        System.out.print("Nombre de quien registra: ");
+        merma.setUsuarioRegistro(scanner.nextLine());
+
+        return merma;
     }
 
 
