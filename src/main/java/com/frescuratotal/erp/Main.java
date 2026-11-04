@@ -20,6 +20,11 @@ import com.frescuratotal.erp.sales.controller.SaleController;
 import com.frescuratotal.erp.sales.model.SaleDao;
 import com.frescuratotal.erp.sales.model.InvoiceDao;
 import com.frescuratotal.erp.sales.view.SaleView;
+import com.frescuratotal.erp.logistics.controller.LogisticsController;
+import com.frescuratotal.erp.logistics.model.DriverDao;
+import com.frescuratotal.erp.logistics.model.RouteDao;
+import com.frescuratotal.erp.logistics.model.VehicleDao;
+import com.frescuratotal.erp.logistics.view.LogisticsView;
 import java.util.Scanner;
 
 public class Main {
@@ -39,6 +44,9 @@ public class Main {
         SaleController saleController =
                 new SaleController(new SaleDao(), new SaleView(scanner), new CustomerDao(), new ProductDao(),
                         new LotDao(), new InvoiceDao());
+        LogisticsController logisticsController =
+                new LogisticsController(new DriverDao(), new VehicleDao(), new RouteDao(),
+                        new LogisticsView(scanner));
         int opcion;
         do {
             opcion = mainView.mostrarMenu();
@@ -48,7 +56,7 @@ public class Main {
                     break;
                 case 2:
                     productController.iniciar();
-                    break;
+                   break;
                 case 3:
                     lotController.iniciar();
                     break;
@@ -57,6 +65,9 @@ public class Main {
                     break;
                 case 5:
                     saleController.iniciar();
+                    break;
+                case 6:
+                    logisticsController.iniciar();
                     break;
                 case 0:
                     mainView.mostrarMensaje("Hasta pronto.");

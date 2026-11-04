@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.frescuratotal.erp.common.DatabaseConnection;
 
@@ -71,6 +73,48 @@ public class SaleDao {
                 conn.rollback();
                 throw e;
             }
+        }
+    }
+
+    public List<Sale> obtenerVentasPorEstado(int idEstado) throws SQLException {
+        List<Sale> ventas = new ArrayList<>();
+        String sql = "SELECT v.*, c.nombre AS nombre_cliente, e.nombre AS nombre_estado "
+                + "FROM ventas v "
+                + "JOIN clientes c ON v.id_cliente = c.id_cliente "
+                + "JOIN estados_venta e ON v.id_estado = e.id_estado "
+                + "WHERE v.id_estado = ? "
+                + "ORDER BY v.fecha_venta";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idEstado);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Sale venta = new Sale();
+                venta.setIdVenta(rs.getInt("id_venta"));
+                venta.setNumeroVenta(rs.getString("numero_venta"));
+                venta.setIdCliente(rs.getInt("id_cliente"));
+                venta.setFechaVenta(rs.getTimestamp("fecha_venta"));
+                venta.setSubtotal(rs.getDouble("subtotal"));
+                venta.setTotalDescuento(rs.getDouble("total_descuento"));
+                venta.setTotalImpuesto(rs.getDouble("total_impuesto"));
+                venta.setMontoTotal(rs.getDouble("monto_total"));
+                venta.setIdEstado(rs.getInt("id_estado"));
+                venta.setUsuarioRegistro(rs.getString("usuario_registro"));
+                venta.setNombreCliente(rs.getString("nombre_cliente"));
+                venta.setNombreEstado(rs.getString("nombre_estado"));
+                ventas.add(venta);
+            }
+        }
+        return ventas;
+    }
+
+    public void cambiarEstado(int idVenta, int idEstado) throws SQLException {
+        String sql = "UPDATE ventas SET id_estado = ? WHERE id_venta = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idEstado);
+            stmt.setInt(2, idVenta);
+            stmt.executeUpdate();
         }
     }
 }

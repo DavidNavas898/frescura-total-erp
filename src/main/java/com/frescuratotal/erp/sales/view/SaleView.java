@@ -20,6 +20,7 @@ public class SaleView {
         System.out.println();
         System.out.println("--- MENU DE VENTAS ---");
         System.out.println("1. Nueva venta");
+        System.out.println("2. Enviar venta a preparacion");
         System.out.println("0. Volver al menu principal");
         return leerNumero("Seleccione una opcion: ");
     }
@@ -57,6 +58,27 @@ public class SaleView {
                     + " | Estado: " + lote.getNombreEstado()
                     + promocion);
         }
+    }
+
+    public void mostrarVentas(List<Sale> ventas) {
+        System.out.println();
+        System.out.println("--- VENTAS REGISTRADAS ---");
+        if (ventas.isEmpty()) {
+            System.out.println("No hay ventas en estado Registrada.");
+            return;
+        }
+        for (Sale venta : ventas) {
+            System.out.println("ID: " + venta.getIdVenta()
+                    + " | Venta: " + venta.getNumeroVenta()
+                    + " | Cliente: " + venta.getNombreCliente()
+                    + " | Fecha: " + venta.getFechaVenta()
+                    + " | Total: " + venta.getMontoTotal()
+                    + " | Estado: " + venta.getNombreEstado());
+        }
+    }
+
+    public int pedirIdVenta() {
+        return leerNumero("ID de la venta: ");
     }
 
     public int pedirIdCliente() {

@@ -54,6 +54,9 @@ public class SaleController {
                 case 1:
                     nuevaVenta();
                     break;
+                case 2:
+                    enviarAPreparacion();
+                    break;
                 case 0:
                     saleView.mostrarMensaje("Regresando al menu principal...");
                     break;
@@ -149,6 +152,33 @@ public class SaleController {
             saleView.mostrarMensaje("Error al registrar la venta: " + e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             saleView.mostrarMensaje("Error al generar el CUFE: " + e.getMessage());
+        }
+    }
+
+    private void enviarAPreparacion() {
+        try {
+            List<Sale> ventas = saleDao.obtenerVentasPorEstado(1);
+            saleView.mostrarVentas(ventas);
+            if (ventas.isEmpty()) {
+                return;
+            }
+            int idVenta = saleView.pedirIdVenta();
+
+            boolean ventaExiste = false;
+            for (Sale venta : ventas) {
+                if (venta.getIdVenta() == idVenta) {
+                    ventaExiste = true;
+                }
+            }
+            if (!ventaExiste) {
+                saleView.mostrarMensaje("Esa venta no esta en estado Registrada.");
+                return;
+            }
+
+            saleDao.cambiarEstado(idVenta, 2);
+            saleView.mostrarMensaje("Venta enviada a preparacion. Ya aparece en el panel de despachos de logistica.");
+        } catch (SQLException e) {
+            saleView.mostrarMensaje("Error al enviar la venta a preparacion: " + e.getMessage());
         }
     }
 
