@@ -16,6 +16,9 @@ import com.frescuratotal.erp.inventory.view.LotView;
 import com.frescuratotal.erp.sales.controller.CustomerController;
 import com.frescuratotal.erp.sales.model.CustomerDao;
 import com.frescuratotal.erp.sales.view.CustomerView;
+import com.frescuratotal.erp.sales.controller.SaleController;
+import com.frescuratotal.erp.sales.model.SaleDao;
+import com.frescuratotal.erp.sales.view.SaleView;
 import java.util.Scanner;
 
 public class Main {
@@ -32,6 +35,9 @@ public class Main {
                         new QuarantineDao(), new InspectionDao(), new WasteDao());
         CustomerController customerController =
                 new CustomerController(new CustomerDao(), new CustomerView(scanner));
+        SaleController saleController =
+                new SaleController(new SaleDao(), new SaleView(scanner), new CustomerDao(), new ProductDao(),
+                        new LotDao());
         int opcion;
         do {
             opcion = mainView.mostrarMenu();
@@ -47,6 +53,9 @@ public class Main {
                     break;
                 case 4:
                     customerController.iniciar();
+                    break;
+                case 5:
+                    saleController.iniciar();
                     break;
                 case 0:
                     mainView.mostrarMensaje("Hasta pronto.");

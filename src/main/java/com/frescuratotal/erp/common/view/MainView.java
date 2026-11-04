@@ -17,6 +17,7 @@ public class MainView {
         System.out.println("2. Productos");
         System.out.println("3. Inventario (lotes)");
         System.out.println("4. Clientes");
+        System.out.println("5. Ventas");
         System.out.println("0. Salir");
         return leerNumero("Seleccione una opcion: ");
     }

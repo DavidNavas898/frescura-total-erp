@@ -184,6 +184,43 @@ public class LotDao {
         return lotes;
     }
 
+    public List<Lot> obtenerLotesDisponiblesPorProducto(int idProducto) throws SQLException {
+        List<Lot> lotes = new ArrayList<>();
+        String sql = "SELECT l.*, p.nombre AS nombre_producto, pr.nombre AS nombre_proveedor, e.nombre AS nombre_estado "
+                + "FROM lotes_inventario l "
+                + "JOIN productos p ON l.id_producto = p.id_producto "
+                + "JOIN proveedores pr ON l.id_proveedor = pr.id_proveedor "
+                + "JOIN estados_lote e ON l.id_estado = e.id_estado "
+                + "WHERE l.id_producto = ? "
+                + "AND l.id_estado IN (1, 2) "
+                + "AND l.cantidad > 0 "
+                + "ORDER BY l.fecha_vencimiento ASC";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idProducto);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Lot lote = new Lot();
+                lote.setIdLote(rs.getInt("id_lote"));
+                lote.setNumeroLote(rs.getString("numero_lote"));
+                lote.setIdProducto(rs.getInt("id_producto"));
+                lote.setIdProveedor(rs.getInt("id_proveedor"));
+                lote.setFechaIngreso(rs.getDate("fecha_ingreso"));
+                lote.setFechaVencimiento(rs.getDate("fecha_vencimiento"));
+                lote.setCantidadInicial(rs.getDouble("cantidad_inicial"));
+                lote.setCantidad(rs.getDouble("cantidad"));
+                lote.setPrecioCompra(rs.getDouble("precio_compra"));
+                lote.setPrecioVenta(rs.getDouble("precio_venta"));
+                lote.setPasillo(rs.getString("pasillo"));
+                lote.setEstante(rs.getString("estante"));
+                lote.setIdEstado(rs.getInt("id_estado"));
+                lote.setNombreProducto(rs.getString("nombre_producto"));
+                lote.setNombreProveedor(rs.getString("nombre_proveedor"));
+                lote.setNombreEstado(rs.getString("nombre_estado"));
+                lotes.add(lote);
+            }
+        }
+        return lotes;
+    }
 
-    
 }
