@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.sales.controller;
 
+import com.frescuratotal.erp.common.LogManager;
 import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.LotDao;
 import com.frescuratotal.erp.inventory.model.Product;
@@ -121,6 +122,7 @@ public class SaleController {
 
             int idVenta = saleDao.registrarVenta(venta);
             saleView.mostrarMensaje("Venta " + venta.getNumeroVenta() + " registrada con exito (ID " + idVenta + ").");
+            LogManager.registrar("INFO", "Venta registrada: " + venta.getNumeroVenta() + ", total " + venta.getMontoTotal());
 
             Invoice factura = new Invoice();
             factura.setIdVenta(idVenta);
@@ -147,9 +149,11 @@ public class SaleController {
                 saleView.mostrarMensaje("PDF de la factura guardado en: " + ruta);
             } catch (Exception e) {
                 saleView.mostrarMensaje("La venta se guardo, pero hubo un error al generar el PDF: " + e.getMessage());
+                LogManager.registrar("ERROR", "Error al generar el PDF: " + e.getMessage());
             }
         } catch (SQLException e) {
             saleView.mostrarMensaje("Error al registrar la venta: " + e.getMessage());
+            LogManager.registrar("ERROR", "Error al registrar la venta: " + e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             saleView.mostrarMensaje("Error al generar el CUFE: " + e.getMessage());
         }
@@ -257,13 +261,10 @@ public class SaleController {
     }
 
     private double cantidadYaEnPedido(Sale venta, int idLote) {
-        double cantidad = 0;
-        for (SaleDetail detalle : venta.getDetalles()) {
-            if (detalle.getIdLote() == idLote) {
-                cantidad = cantidad + detalle.getCantidadVendida();
-            }
-        }
-        return cantidad;
+        return venta.getDetalles().stream()
+                .filter(detalle -> detalle.getIdLote() == idLote)
+                .mapToDouble(detalle -> detalle.getCantidadVendida())
+                .sum();
     }
 
     private void calcularTotales(Sale venta) {

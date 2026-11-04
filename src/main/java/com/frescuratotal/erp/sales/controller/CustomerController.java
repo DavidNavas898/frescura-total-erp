@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.sales.controller;
 
+import com.frescuratotal.erp.common.LogManager;
 import com.frescuratotal.erp.sales.model.Customer;
 import com.frescuratotal.erp.sales.model.CustomerDao;
 import com.frescuratotal.erp.sales.view.CustomerView;
@@ -56,8 +57,10 @@ public class CustomerController {
         try {
             customerDao.registrarCliente(cliente);
             customerView.mostrarMensaje("Cliente registrado exitosamente.");
+            LogManager.registrar("INFO", "Cliente registrado: " + cliente.getNombre());
         } catch (SQLException e) {
             customerView.mostrarMensaje("Error al registrar cliente: " + e.getMessage());
+            LogManager.registrar("ERROR", "Error al registrar cliente: " + e.getMessage());
         }
     }
 }

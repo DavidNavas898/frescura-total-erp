@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.suppliers.controller;
 
+import com.frescuratotal.erp.common.LogManager;
 import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.LotDao;
 import com.frescuratotal.erp.inventory.model.Product;
@@ -71,8 +72,10 @@ public class SupplierController {
         try {
             supplierDao.agregarProveedor(proveedor);
             supplierView.mostrarMensaje("Proveedor agregado exitosamente.");
+            LogManager.registrar("INFO", "Proveedor agregado: " + proveedor.getNombre());
         } catch (SQLException e) {
             supplierView.mostrarMensaje("Error al agregar proveedor: " + e.getMessage());
+            LogManager.registrar("ERROR", "Error al agregar proveedor: " + e.getMessage());
         }
     }
 
@@ -139,12 +142,8 @@ public class SupplierController {
             supplierView.mostrarProductosDisponibles(productos);
             int idProducto = supplierView.pedirIdProducto();
 
-            boolean productoExiste = false;
-            for (Product producto : productos) {
-                if (producto.getIdProducto() == idProducto) {
-                    productoExiste = true;
-                }
-            }
+            boolean productoExiste = productos.stream()
+                    .anyMatch(producto -> producto.getIdProducto() == idProducto);
             if (!productoExiste) {
                 supplierView.mostrarMensaje("El producto no existe.");
                 return;

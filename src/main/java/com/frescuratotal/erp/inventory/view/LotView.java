@@ -55,17 +55,13 @@ public class LotView {
     public void mostrarProductos(List<Product> productos) {
         System.out.println();
         System.out.println("--- PRODUCTOS DISPONIBLES ---");
-        for (Product producto : productos) {
-            System.out.println(producto.getIdProducto() + ". " + producto.getNombre());
-        }
+        productos.forEach(producto -> System.out.println(producto.getIdProducto() + ". " + producto.getNombre()));
     }
 
     public void mostrarProveedores(List<Supplier> proveedores) {
         System.out.println();
         System.out.println("--- PROVEEDORES ---");
-        for (Supplier proveedor : proveedores) {
-            System.out.println(proveedor.getIdProveedor() + ". " + proveedor.getNombre());
-        }
+        proveedores.forEach(proveedor -> System.out.println(proveedor.getIdProveedor() + ". " + proveedor.getNombre()));
     }
 
 

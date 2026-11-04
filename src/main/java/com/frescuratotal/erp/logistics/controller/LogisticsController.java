@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.logistics.controller;
 
+import com.frescuratotal.erp.common.LogManager;
 import com.frescuratotal.erp.logistics.model.DeliveryOrder;
 import com.frescuratotal.erp.logistics.model.DeliveryRoute;
 import com.frescuratotal.erp.logistics.model.Driver;
@@ -206,8 +207,10 @@ public class LogisticsController {
             int idRuta = routeDao.crearRuta(ruta);
             logisticsView.mostrarMensaje("Ruta creada (ID " + idRuta + ") con " + ruta.getPedidos().size()
                     + " pedido(s), vehiculo " + vehiculo.getPlaca() + " y conductor " + conductor.getNombre() + ".");
+            LogManager.registrar("INFO", "Ruta creada: ID " + idRuta + ", vehiculo " + vehiculo.getPlaca());
         } catch (SQLException e) {
             logisticsView.mostrarMensaje("Error al crear la ruta: " + e.getMessage());
+            LogManager.registrar("ERROR", "Error al crear la ruta: " + e.getMessage());
         }
     }
 

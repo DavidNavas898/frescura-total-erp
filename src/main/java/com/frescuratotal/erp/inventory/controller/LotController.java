@@ -1,5 +1,6 @@
 package com.frescuratotal.erp.inventory.controller;
 
+import com.frescuratotal.erp.common.LogManager;
 import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.LotDao;
 import com.frescuratotal.erp.inventory.model.Product;
@@ -203,8 +204,10 @@ public class LotController {
             lotDao.actualizarCantidad(lote.getIdLote(), nuevaCantidad);
 
             lotView.mostrarMensaje("Merma registrada. Al lote " + numeroLote + " le quedan " + nuevaCantidad + ".");
+            LogManager.registrar("INFO", "Merma registrada en el lote " + numeroLote + ", cantidad perdida " + merma.getCantidadPerdida());
         } catch (SQLException e) {
             lotView.mostrarMensaje("Error al registrar la merma: " + e.getMessage());
+            LogManager.registrar("ERROR", "Error al registrar la merma: " + e.getMessage());
         }
     }
 
@@ -226,8 +229,10 @@ public class LotController {
 
             lotDao.registrarLote(lote);
             lotView.mostrarMensaje("Lote registrado correctamente con numero: " + numeroLote);
+            LogManager.registrar("INFO", "Lote registrado: " + numeroLote);
         } catch (SQLException e) {
             lotView.mostrarMensaje("Error al registrar el lote: " + e.getMessage());
+            LogManager.registrar("ERROR", "Error al registrar el lote: " + e.getMessage());
         }
     }
 
