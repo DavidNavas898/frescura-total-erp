@@ -11,11 +11,13 @@ import com.frescuratotal.erp.sales.model.InvoiceDao;
 import com.frescuratotal.erp.sales.model.Sale;
 import com.frescuratotal.erp.sales.model.SaleDao;
 import com.frescuratotal.erp.sales.model.SaleDetail;
+import com.frescuratotal.erp.sales.view.InvoicePdf;
 import com.frescuratotal.erp.sales.view.SaleView;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HexFormat;
@@ -71,13 +73,13 @@ public class SaleController {
             saleView.mostrarClientes(clientes);
             int idCliente = saleView.pedirIdCliente();
 
-            boolean clienteExiste = false;
+            Customer clienteElegido = null;
             for (Customer cliente : clientes) {
                 if (cliente.getIdCliente() == idCliente) {
-                    clienteExiste = true;
+                    clienteElegido = cliente;
                 }
             }
-            if (!clienteExiste) {
+            if (clienteElegido == null) {
                 saleView.mostrarMensaje("El cliente no existe. Venta cancelada.");
                 return;
             }
@@ -131,9 +133,18 @@ public class SaleController {
             factura.setCufe(generarCufe(datosCufe));
             factura.setEnlaceQr("https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey=" + factura.getCufe());
 
+            factura.setFechaEmision(Timestamp.valueOf(LocalDateTime.now()));
             invoiceDao.registrarFactura(factura);
             saleView.mostrarMensaje("Factura " + factura.getNumeroFactura() + " generada.");
             saleView.mostrarMensaje("CUFE: " + factura.getCufe());
+
+            try {
+                InvoicePdf invoicePdf = new InvoicePdf();
+                String ruta = invoicePdf.generarFactura(factura, venta, clienteElegido);
+                saleView.mostrarMensaje("PDF de la factura guardado en: " + ruta);
+            } catch (Exception e) {
+                saleView.mostrarMensaje("La venta se guardo, pero hubo un error al generar el PDF: " + e.getMessage());
+            }
         } catch (SQLException e) {
             saleView.mostrarMensaje("Error al registrar la venta: " + e.getMessage());
         } catch (NoSuchAlgorithmException e) {
