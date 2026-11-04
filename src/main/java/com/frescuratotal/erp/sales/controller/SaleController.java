@@ -6,14 +6,21 @@ import com.frescuratotal.erp.inventory.model.Product;
 import com.frescuratotal.erp.inventory.model.ProductDao;
 import com.frescuratotal.erp.sales.model.Customer;
 import com.frescuratotal.erp.sales.model.CustomerDao;
+import com.frescuratotal.erp.sales.model.Invoice;
+import com.frescuratotal.erp.sales.model.InvoiceDao;
 import com.frescuratotal.erp.sales.model.Sale;
 import com.frescuratotal.erp.sales.model.SaleDao;
 import com.frescuratotal.erp.sales.model.SaleDetail;
 import com.frescuratotal.erp.sales.view.SaleView;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HexFormat;
 import java.util.List;
+
 
 public class SaleController {
 
@@ -25,14 +32,16 @@ public class SaleController {
     private CustomerDao customerDao;
     private ProductDao productDao;
     private LotDao lotDao;
+    private InvoiceDao invoiceDao;
 
     public SaleController(SaleDao saleDao, SaleView saleView, CustomerDao customerDao, ProductDao productDao,
-            LotDao lotDao) {
+            LotDao lotDao, InvoiceDao invoiceDao) {
         this.saleDao = saleDao;
         this.saleView = saleView;
         this.customerDao = customerDao;
         this.productDao = productDao;
         this.lotDao = lotDao;
+        this.invoiceDao = invoiceDao;
     }
 
     public void iniciar() {
@@ -107,8 +116,28 @@ public class SaleController {
 
             int idVenta = saleDao.registrarVenta(venta);
             saleView.mostrarMensaje("Venta " + venta.getNumeroVenta() + " registrada con exito (ID " + idVenta + ").");
+
+            Invoice factura = new Invoice();
+            factura.setIdVenta(idVenta);
+            factura.setNumeroFactura("FE-" + ahora.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss")));
+
+            factura.setSubtotal(venta.getSubtotal());
+            factura.setTotalDescuento(venta.getTotalDescuento());
+            factura.setMontoImpuesto(venta.getTotalImpuesto());
+            factura.setMontoTotal(venta.getMontoTotal());
+
+            String datosCufe = factura.getNumeroFactura() + ahora + venta.getSubtotal()
+                    + venta.getTotalImpuesto() + venta.getMontoTotal() + "900123456-7";
+            factura.setCufe(generarCufe(datosCufe));
+            factura.setEnlaceQr("https://catalogo-vpfe.dian.gov.co/document/searchqr?documentkey=" + factura.getCufe());
+
+            invoiceDao.registrarFactura(factura);
+            saleView.mostrarMensaje("Factura " + factura.getNumeroFactura() + " generada.");
+            saleView.mostrarMensaje("CUFE: " + factura.getCufe());
         } catch (SQLException e) {
             saleView.mostrarMensaje("Error al registrar la venta: " + e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            saleView.mostrarMensaje("Error al generar el CUFE: " + e.getMessage());
         }
     }
 
@@ -215,5 +244,11 @@ public class SaleController {
 
     private double redondear(double valor) {
         return Math.round(valor * 100) / 100.0;
+    }
+
+    private String generarCufe(String datos) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-384");
+        byte[] hash = digest.digest(datos.getBytes());
+        return HexFormat.of().formatHex(hash).toUpperCase();
     }
 }

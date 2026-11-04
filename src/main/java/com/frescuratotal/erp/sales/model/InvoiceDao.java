@@ -3,7 +3,6 @@ package com.frescuratotal.erp.sales.model;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import com.frescuratotal.erp.common.DatabaseConnection;
 
 public class InvoiceDao {
