@@ -50,4 +50,30 @@ public class CustomerDao {
             stmt.executeUpdate();
         }
     }
+
+    public List<Customer> obtenerClientesPorLote(int idLote) throws SQLException {
+        List<Customer> clientes = new ArrayList<>();
+        String sql = "SELECT DISTINCT c.id_cliente, c.nombre, c.documento, c.telefono "
+                + "FROM clientes c "
+                + "JOIN ventas v ON v.id_cliente = c.id_cliente "
+                + "JOIN detalles_venta d ON d.id_venta = v.id_venta "
+                + "WHERE d.id_lote = ? "
+                + "ORDER BY c.nombre";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, idLote);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Customer cliente = new Customer();
+                    cliente.setIdCliente(rs.getInt("id_cliente"));
+                    cliente.setNombre(rs.getString("nombre"));
+                    cliente.setDocumento(rs.getString("documento"));
+                    cliente.setTelefono(rs.getString("telefono"));
+                    clientes.add(cliente);
+                }
+            }
+        }
+        return clientes;
+    }
 }

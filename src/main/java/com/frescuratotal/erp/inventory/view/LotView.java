@@ -7,6 +7,7 @@ import com.frescuratotal.erp.inventory.model.Lot;
 import com.frescuratotal.erp.inventory.model.Product;
 import com.frescuratotal.erp.inventory.model.Quarantine;
 import com.frescuratotal.erp.inventory.model.Waste;
+import com.frescuratotal.erp.sales.model.Customer;
 import com.frescuratotal.erp.suppliers.model.Supplier;
 import java.sql.Date;
 import java.util.List;
@@ -95,6 +96,18 @@ public class LotView {
         System.out.println();
         System.out.print("Numero de lote: ");
         return scanner.nextLine();
+    }
+
+    public void mostrarClientesDelLote(List<Customer> clientes) {
+        System.out.println();
+        System.out.println("--- CLIENTES QUE RECIBIERON PRODUCTOS DE ESTE LOTE ---");
+        if (clientes.isEmpty()) {
+            System.out.println("Ningun cliente ha comprado de este lote.");
+            return;
+        }
+        clientes.forEach(cliente -> System.out.println(cliente.getNombre()
+                + " | Documento: " + cliente.getDocumento()
+                + " | Telefono: " + cliente.getTelefono()));
     }
 
     public void mostrarDetalleLote(Lot lote) {

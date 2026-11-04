@@ -139,7 +139,7 @@ src/main/java/com/frescuratotal/erp/
 
 docs/
 ├── database.sql            // Script DDL + DML
-├── erp_frescura_total.png  // Diagrama entidad-relación
+├── diagrama_er.png         // Diagrama entidad-relación
 └── diagrama_clases.png     // Diagrama de clases UML
 ```
 
@@ -149,7 +149,7 @@ docs/
   cambios de estado). Recibe los datos de la vista, usa los DAO y decide qué mostrar.
 
 Diagramas:
-- [Diagrama entidad-relación](docs/erp_frescura_total.png)
+- [Diagrama entidad-relación](docs/diagrama_er.png)
 - [Diagrama de clases UML](docs/diagrama_clases.png)
 
 ## Principios y Patrones de Diseño

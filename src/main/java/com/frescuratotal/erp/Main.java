@@ -38,7 +38,7 @@ public class Main {
                 new ProductController(new ProductDao(), new ProductView(scanner));
         LotController lotController =
                 new LotController(new LotDao(), new LotView(scanner), new ProductDao(), new SupplierDao(),
-                        new QuarantineDao(), new InspectionDao(), new WasteDao());
+                        new QuarantineDao(), new InspectionDao(), new WasteDao(), new CustomerDao());
         CustomerController customerController =
                 new CustomerController(new CustomerDao(), new CustomerView(scanner));
         SaleController saleController =

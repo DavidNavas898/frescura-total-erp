@@ -12,6 +12,8 @@ import com.frescuratotal.erp.inventory.model.InspectionDao;
 import com.frescuratotal.erp.inventory.model.Waste;
 import com.frescuratotal.erp.inventory.model.WasteDao;
 import com.frescuratotal.erp.inventory.view.LotView;
+import com.frescuratotal.erp.sales.model.Customer;
+import com.frescuratotal.erp.sales.model.CustomerDao;
 import com.frescuratotal.erp.suppliers.model.Supplier;
 import com.frescuratotal.erp.suppliers.model.SupplierDao;
 
@@ -29,10 +31,12 @@ public class LotController {
     private QuarantineDao quarantineDao;
     private InspectionDao inspectionDao;
     private WasteDao wasteDao;
+    private CustomerDao customerDao;
 
 
     public LotController(LotDao lotDao, LotView lotView, ProductDao productDao, SupplierDao supplierDao,
-            QuarantineDao quarantineDao, InspectionDao inspectionDao, WasteDao wasteDao) {
+            QuarantineDao quarantineDao, InspectionDao inspectionDao, WasteDao wasteDao,
+            CustomerDao customerDao) {
         this.lotDao = lotDao;
         this.lotView = lotView;
         this.productDao = productDao;
@@ -40,6 +44,7 @@ public class LotController {
         this.quarantineDao = quarantineDao;
         this.inspectionDao = inspectionDao;
         this.wasteDao = wasteDao;
+        this.customerDao = customerDao;
     }
 
     public void iniciar(){
@@ -95,6 +100,8 @@ public class LotController {
                 lotView.mostrarMensaje("No se encontro ningun lote con el numero " + numeroLote);
             } else {
                 lotView.mostrarDetalleLote(lote);
+                List<Customer> clientes = customerDao.obtenerClientesPorLote(lote.getIdLote());
+                lotView.mostrarClientesDelLote(clientes);
             }
         } catch (SQLException e) {
             lotView.mostrarMensaje("Error al buscar el lote: " + e.getMessage());
