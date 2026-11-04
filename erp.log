@@ -1,0 +1,9 @@
+2026-11-04T11:33:09.064923200 | INFO | Proveedor agregado: Tienda Monterrey
+2026-11-04T11:39:26.102644500 | INFO | Proveedor agregado: Frutas del Valle SAS
+2026-11-04T11:44:03.101615200 | INFO | Lote registrado: L-20261104-114403
+2026-11-04T11:44:51.953016700 | INFO | Lote registrado: L-20261104-114451
+2026-11-04T11:47:09.448256900 | INFO | Merma registrada en el lote L-20261104-114403, cantidad perdida 2.0
+2026-11-04T11:47:52.883758200 | INFO | Cliente registrado: Restaurante El Buen Sabor
+2026-11-04T11:48:18.480912200 | ERROR | Error al registrar cliente: Duplicate entry '900111222-5' for key 'clientes.documento'
+2026-11-04T11:50:50.154086700 | INFO | Venta registrada: V-20261104-115040, total 385560.0
+2026-11-04T11:54:02.006077700 | INFO | Ruta creada: ID 20, vehiculo KLM-482

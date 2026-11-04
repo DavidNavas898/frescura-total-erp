@@ -93,6 +93,22 @@ Al confirmar una venta, la factura se guarda en PDF en la carpeta `facturas/`, e
 del proyecto (por ejemplo, `facturas/FE-20261103-205605.pdf`). La carpeta se crea
 automáticamente la primera vez que se genera una factura.
 
+### Registro de eventos (logs)
+El sistema guarda un registro de las acciones importantes y de los errores en el archivo
+`erp.log`, en la raíz del proyecto. El archivo se crea solo la primera vez y cada nueva
+línea se añade al final. Cada línea tiene la fecha y hora, el tipo (`INFO` o `ERROR`) y
+el mensaje:
+
+```
+2026-11-04T11:44:03.101615200 | INFO | Lote registrado: L-20261104-114403
+2026-11-04T11:48:18.480912200 | ERROR | Error al registrar cliente: Duplicate entry '900111222-5' for key 'clientes.documento'
+2026-11-04T11:50:50.154086700 | INFO | Venta registrada: V-20261104-115040, total 385560.0
+```
+
+Se registran: proveedores agregados, lotes registrados, mermas, clientes registrados,
+ventas, errores al generar el PDF y rutas de entrega creadas, además de los errores de base
+de datos de cada una de esas operaciones.
+
 ## Estructura del Proyecto
 El código sigue una arquitectura **MVC por componentes**: cada módulo del negocio tiene
 sus propios paquetes `model`, `view` y `controller`.
@@ -101,6 +117,7 @@ sus propios paquetes `model`, `view` y `controller`.
 src/main/java/com/frescuratotal/erp/
 ├── common/
 │   ├── DatabaseConnection.java   // Conexión JDBC a MySQL
+│   ├── LogManager.java           // Escribe los eventos y errores en erp.log
 │   └── view/MainView.java        // Menú principal
 ├── inventory/                    // Módulo 1: Inventario y calidad
 │   ├── model/      // Product, Category, Lot, Quarantine, Inspection, Waste y sus DAO
@@ -176,3 +193,27 @@ Las operaciones que tocan varias tablas se hacen en una sola transacción
 
 Si algo falla a mitad, se deshace todo y la base de datos no queda inconsistente (por
 ejemplo, una venta registrada sin haber descontado el inventario).
+
+### Registro centralizado de eventos (`LogManager`)
+`LogManager` tiene un método estático `registrar(tipo, mensaje)` que usa `FileWriter` en
+modo de añadir (`append`) para escribir en `erp.log`. Los controladores solo lo llaman con
+una línea, sin saber cómo ni dónde se guarda el log. Si mañana se quisiera guardar el log en
+otro archivo o en la base de datos, solo se cambiaría esta clase.
+
+### Expresiones lambda y Stream API
+Algunos recorridos de listas se escribieron de forma funcional, con lambdas y streams:
+
+| Dónde | Código | Qué hace |
+|---|---|---|
+| `LotView.mostrarProductos()` | `productos.forEach(producto -> ...)` | Imprime cada producto |
+| `LotView.mostrarProveedores()` | `proveedores.forEach(proveedor -> ...)` | Imprime cada proveedor |
+| `SupplierController` (agregar al catálogo) | `productos.stream().anyMatch(...)` | Comprueba si existe un producto con el ID escrito |
+| `SaleController.cantidadYaEnPedido()` | `stream().filter(...).mapToDouble(...).sum()` | Suma lo que ya se pidió de un lote para no vender más stock del que hay |
+
+Ejemplo:
+```java
+return venta.getDetalles().stream()
+        .filter(detalle -> detalle.getIdLote() == idLote)
+        .mapToDouble(detalle -> detalle.getCantidadVendida())
+        .sum();
+```
