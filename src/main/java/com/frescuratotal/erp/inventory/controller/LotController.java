@@ -21,6 +21,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class LotController {
 
@@ -243,6 +245,39 @@ public class LotController {
         }
     }
 
+    // ------------------------------------------------------------------
+
+    public void generarReporte(){
+        try{
+            List<Lot> lotes = lotDao.obtenerLotesConProveedor();
+
+            if(lotes.isEmpty()){
+                lotView.mostrarMensaje("No hay datos de inventario suficientes para generar estadisticas.");
+                return;
+            }
+
+            Map<String, Double> volumenPorProveedor = lotes.stream()
+            .collect(Collectors.groupingBy(
+                lote -> lote.getNombreProveedor(),
+                Collectors.summingDouble(lote -> lote.getCantidadInicial())
+            ));
+
+            String proveedorMayor = volumenPorProveedor.entrySet().stream()
+                    .max(Map.Entry.comparingByValue())
+                    .map(entrada -> entrada.getKey())
+                    .orElse("Sin datos");
+
+            List<String> proveedoresVencidos = lotes.stream()
+                    .filter(lote -> lote.getNombreEstado().equals("Vencido"))
+                    .map(lote -> lote.getNombreProveedor())
+                    .distinct()
+                    .sorted()
+                    .collect(Collectors.toList());
+            lotView.mostrarReporte(proveedorMayor, proveedoresVencidos);
+        } catch (SQLException e) {
+            lotView.mostrarMensaje("Error al generar el reporte: " + e.getMessage());
+        }
+    }
     
 
 }

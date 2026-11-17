@@ -69,6 +69,9 @@ public class Main {
                 case 6:
                     logisticsController.iniciar();
                     break;
+                case 7:
+                    lotController.generarReporte();
+                    break;
                 case 0:
                     mainView.mostrarMensaje("Hasta pronto.");
                     break;
